@@ -142,8 +142,8 @@
 </div>
 
 <a href="https://github.com/hexakon/bpmf" target="_blank">
-  <div class="fixed bottom-2 right-2 text-right text-zinc-600 hover:text-zinc-500">
-    © Hexakon 2024
+  <div class="fixed bottom-2 right-2 text-right text-gray-600 hover:text-gray-300 sans">
+    © 六葉草 Hexakon 2024
     <br>
     Click here for GitHub repo
   </div>
