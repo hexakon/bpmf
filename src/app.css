@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Noto+Serif+TC&display=swap');
 
-.sans {
+* {
   font-family: "Noto Sans TC", sans-serif;
   font-weight: 400;
   font-style: normal;

@@ -1,13 +1,82 @@
-<script>
+<script lang="ts">
   import Key from "$lib/Key.svelte";
   import KeyboardRow from "$lib/KeyboardRow.svelte";
   import Challenge from "$lib/Challenge.svelte";
+  import challenges from '$lib/challenges.json';
+  import { key_display_mode, current_challenge, current_challenge_number, cursor, last_input } from "$lib/stores";
+
+  const challenge_list = challenges;
+
+  function shuffleChallenges() {
+    for (let i = challenge_list.length -1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i+1));
+      const k = challenge_list[i];
+      challenge_list[i] = challenge_list[j];
+      challenge_list[j] = k;
+    }
+  }
+
+  function nextChallenge() { // goes to the next challenge.
+    $current_challenge = challenge_list[$current_challenge_number];
+  }
+
+  let shift_is_pressed = false;
+  let read_from_left = false;
+  function switchdisplay (e: KeyboardEvent) {
+    console.log(e.key);
+    if (e.key === 'Shift' && !shift_is_pressed) {
+      shift_is_pressed = true;
+      switch ($key_display_mode) {
+        case 'all':
+          $key_display_mode = 'needed';
+          break;
+        case 'needed':
+          $key_display_mode = 'next';
+          break;
+        case 'next':
+          $key_display_mode = 'all';
+          break;
+      }
+    }
+    else if (e.key === 'Escape') {
+      $last_input = 'esc';
+      $cursor.all = 999; // forces this to top out Challenge.svelte and switch to next challenge
+      console.log("NEXT")
+    }
+    else if (e.key === 'Tab') {
+      e.preventDefault()
+      read_from_left = !read_from_left;
+    }
+  }
+  function keyup (e: KeyboardEvent) {
+    if (e.key === 'Shift' && shift_is_pressed) {
+      shift_is_pressed = false;
+    }
+  }
+
+  shuffleChallenges() // shuffle once on load
+
+  $: { // reaction is triggered by Challenge.svelte incrementing $current_challenge number, so we don't increment it here
+    console.log("challenge completed! moving to number "+$current_challenge_number)
+    if ($current_challenge_number >= challenges.length) {
+      $current_challenge_number = 0;
+      shuffleChallenges()
+      console.log("shuffling challenges");
+    }
+    console.log(challenge_list);
+    console.log(challenge_list[$current_challenge_number]);
+    nextChallenge()
+  }
 </script>
 
 
 <div class="w-100% h-full min-h-lvh bg-zinc-900 flex flex-col justify-center items-center text-white">
   
-  <Challenge />
+  <div class="flex flex-row w-lvw justify-center overflow-hidden my-20">
+    {#key [$current_challenge_number, read_from_left]}
+      <Challenge left={read_from_left} />
+    {/key}
+  </div>
 
   <KeyboardRow>
     <Key bpmf="ㄅ" key="1" finger=1 />
@@ -65,9 +134,19 @@
     <Key bpmf=" " key="space" keyVisible={false} finger=9 />
   </KeyboardRow>
 
-  <div class="mt-12 tracking-[.25rem] text-gray-500 text-sm ">
-    按 TAB 切換鍵盤顯示模式
+  <div class="mt-12 tracking-[.3rem] text-gray-500 text-sm sans text-center">
+    <p>按 SHIFT 切換鍵盤顯示模式</p>
+    <p class="my-2">按 ESC 跳過該行文字</p>
+    <p>按 TAB 切換文字閲讀方向</p>
   </div>
 </div>
 
-<!-- <svelte:window on:keydown={(e) => {console.log(e.key)}} /> -->
+<a href="https://github.com/hexakon/bpmf" target="_blank">
+  <div class="fixed bottom-2 right-2 text-right text-zinc-600 hover:text-zinc-500">
+    © Hexakon 2024
+    <br>
+    Click here for GitHub repo
+  </div>
+</a>
+
+<svelte:window on:keydown={switchdisplay} on:keyup={keyup} />
