@@ -34,28 +34,33 @@
   <div class="serif text-[2.5rem] mr-2">{char}</div>
 
 
-  {#if /[ˇˋˊ]/.test(bpmf)}
+  {#if /[ˇˋˊ]/.test(bpmf)} <!-- ends in tone 2, 3 or 4 -->
     <div class="serif v text-lg/[.75] text-right tracking-tight">
-      {#each bpmf.substring(0,bpmf.length-1) as thisbpmf, thisindex}
-        <CharBpmf charIndex={index}, myIndex={thisindex} bpmf={thisbpmf} />
+      {#each bpmf.substring(0,bpmf.length-1) as thisbpmf}
+        <CharBpmf charIndex={index} bpmf={thisbpmf} />
       {/each}
       <br>
-      <CharBpmf charIndex={index}, myIndex={bpmf.length-1} bpmf={bpmf.substring(bpmf.length-1)} />
+      <span class:text-gray-600={$cursor.char > index}
+      class:text-yellow-500={bpmf[bpmf.length-1] === 'ˇ' && $cursor.char === index && $cursor.tone}
+      class:text-green-500 ={bpmf[bpmf.length-1] === 'ˋ' && $cursor.char === index && $cursor.tone}
+      class:text-cyan-500  ={bpmf[bpmf.length-1] === 'ˊ' && $cursor.char === index && $cursor.tone}
+      class:scale-130      ={$cursor.char === index && $cursor.tone}
+      >{bpmf.substring(bpmf.length-1)}</span>
     </div>
 
 
-  {:else if /[˙]/.test(bpmf)}
-    <div class="serif v tone5 text-lg/[.75] text-right tracking-tight relative" class:tone5last={$cursor.char === index && $cursor.bpmf === bpmf.length-1}>
-      {#each bpmf.substring(0,bpmf.length-1) as thisbpmf, thisindex}
-        <CharBpmf charIndex={index}, myIndex={thisindex} bpmf={thisbpmf} />
+  {:else if /[˙]/.test(bpmf)} <!-- ends in tone 5 -->
+    <div class="serif v tone5 text-lg/[.75] text-right tracking-tight relative" class:tone5last={$cursor.char === index && $cursor.tone}>
+      {#each bpmf.substring(0,bpmf.length-1) as thisbpmf}
+        <CharBpmf charIndex={index} bpmf={thisbpmf} />
       {/each}
     </div>
 
 
   {:else}
     <div class="serif v text-lg/[.75] text-right tracking-tight">
-      {#each bpmf as thisbpmf, thisindex}
-        <CharBpmf charIndex={index}, myIndex={thisindex} bpmf={thisbpmf} />
+      {#each bpmf as thisbpmf}
+        <CharBpmf charIndex={index} bpmf={thisbpmf} />
       {/each}
     </div>
 

@@ -39,8 +39,7 @@
       }
     }
     else if (e.key === 'Escape') {
-      $last_input = 'esc';
-      $cursor.all = 999; // forces this to top out Challenge.svelte and switch to next challenge
+      $last_input = [...$last_input, 'esc'];
       console.log("NEXT")
     }
     else if (e.key === 'Tab') {

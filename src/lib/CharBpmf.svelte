@@ -3,26 +3,23 @@
   import color from "$lib/keycolors.json";
 
   export let charIndex: any; // seems to complain number/string mismatch if i set it to number. wtf??
-  export let myIndex: number;
   export let bpmf: any;
 
   charIndex = parseInt(charIndex, 10); // very hacky fix. idfk why this is even necessary, it shouldnt be
 
-  let state = charIndex === 0 && myIndex === 0 ? "now" : "wait";
+  let state = charIndex === 0 ? "now" : "wait"; // if it's the first character, start off as "now"
 
   $: {
     if ($cursor.char === charIndex) {      // we are currently on this character
-      if ($cursor.bpmf === myIndex) {
-        state = "now";  // we are currently on this bpmf
-      } else if ($cursor.bpmf > myIndex) {
-        state = "done"; // we've passed this bpmf
+      if (!$cursor.inputted.includes(bpmf)) {
+        state = "now";  // this bpmf has not been inputted yet
       } else {
-        state = "wait"; // we havent reached this bpmf
+        state = "done"; // this bpmf has been inputted
       }
     } else if ($cursor.char > charIndex) { 
       state = "done"; // we've passed this character
     } else {
-      state = "wait"; // we havent reached this character yet
+      state = "wait"; // we have not reached this character yet
     }
   }
 
