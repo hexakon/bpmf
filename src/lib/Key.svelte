@@ -33,7 +33,7 @@
     if (event.key === '/') event.preventDefault(); // why is this key bound to the same thing as ctrl+f on firefox?
     if (event.key === bpmf || event.key === key) {
       $last_input = [...$last_input, bpmf];
-      console.log($last_input)
+      //console.log($last_input)
       keypressed = true;
     }
   }

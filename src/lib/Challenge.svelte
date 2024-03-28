@@ -7,7 +7,6 @@
   let bpmfs: string[] = $current_challenge[1].split('*');
 
   export let left = false;
-  export let preview = false;
 
   $: if ($last_input.length > 0) { // do stuff upon receiving input
 
@@ -19,7 +18,7 @@
           $cursor.inputted = [];
           $cursor.char++;
           $cursor.tone = false;
-          console.log("next character");
+          // next character
         } else if (!/[ˊˇˋ˙ ]/.test(bpmfInput)) { // input is normal bpmf (NOT a tone)
           $cursor.inputted = [...$cursor.inputted, bpmfInput];
           if ($cursor.inputted.length === bpmfs[$cursor.char].length-1) {

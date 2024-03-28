@@ -5,8 +5,6 @@
   import ChallengePreview from '$lib/ChallengePreview.svelte'
   import challenges from '$lib/challenges.json';
   import { key_display_mode, current_challenge, current_challenge_number, cursor, last_input } from "$lib/stores";
-  import { read } from "$app/server";
-  import { slide } from "svelte/transition";
 
   const challenge_list = challenges;
 
@@ -26,7 +24,7 @@
   let shift_is_pressed = false;
   let read_from_left = false;
   function switchdisplay (e: KeyboardEvent) {
-    console.log(e.key);
+    //console.log(e.key);
     if (e.key === 'Shift' && !shift_is_pressed) {
       shift_is_pressed = true;
       switch ($key_display_mode) {
@@ -43,7 +41,7 @@
     }
     else if (e.key === 'Escape') {
       $last_input = [...$last_input, 'esc'];
-      console.log("NEXT")
+      //console.log("NEXT")
     }
     else if (e.key === 'Tab') {
       e.preventDefault()
@@ -59,14 +57,14 @@
   shuffleChallenges() // shuffle once on load
 
   $: { // reaction is triggered by Challenge.svelte incrementing $current_challenge number, so we don't increment it here
-    console.log("challenge completed! moving to number "+$current_challenge_number)
+    //console.log("challenge completed! moving to number "+$current_challenge_number)
     if ($current_challenge_number >= challenges.length) {
       $current_challenge_number = 0;
       shuffleChallenges()
-      console.log("shuffling challenges");
+      //console.log("shuffling challenges");
     }
-    console.log(challenge_list);
-    console.log(challenge_list[$current_challenge_number]);
+    //console.log(challenge_list);
+    //console.log(challenge_list[$current_challenge_number]);
     nextChallenge()
   }
 </script>
