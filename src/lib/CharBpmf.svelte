@@ -25,7 +25,8 @@
 
 </script>
 
-<span class:text-gray-600={state==="done"}
+<span class="transition-colors"
+class:text-gray-600  ={state==="done"}
 class:text-red-500   ={color[bpmf]==="1" && state === "now"}
 class:text-orange-500={color[bpmf]==="2" && state === "now"}
 class:text-yellow-500={color[bpmf]==="3" && state === "now"}

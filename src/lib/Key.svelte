@@ -14,12 +14,15 @@
       case "needed":
         active = new RegExp(bpmf).test($current_challenge[1]);
         break;
-      case "next":
+      /*case "next":
         if (/[ˊˋˇ˙ ]/.test(bpmf)) {
           active = $current_challenge[1].split("*")[$cursor.char].includes(bpmf) && !$cursor.inputted.includes(bpmf) && $cursor.tone;
         } else {
           active = $current_challenge[1].split("*")[$cursor.char].includes(bpmf) && !$cursor.inputted.includes(bpmf);
         }
+        break;*/
+      case "next":
+        active = $current_challenge[1].split("*")[$cursor.char].includes(bpmf) && !$cursor.inputted.includes(bpmf);
         break;
     }
   }
@@ -63,7 +66,7 @@
   class:border-pink-500  ={finger==="8" && active} class:text-pink-500  ={finger==="8" && active}
   class:w-72={finger==="9"}
 
-  class:scale-90={keypressed} class:opacity-50={keypressed}
+  class:scale-90={keypressed}     class:opacity-50={keypressed}
   class:border-gray-700={!active} class:text-gray-700={!active}
 >
   {#if keyVisible}

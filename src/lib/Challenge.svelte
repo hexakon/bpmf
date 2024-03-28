@@ -7,7 +7,7 @@
   let bpmfs: string[] = $current_challenge[1].split('*');
 
   export let left = false;
-
+  export let preview = false;
 
   $: if ($last_input.length > 0) { // do stuff upon receiving input
 
@@ -50,7 +50,7 @@
 <div
   out:slide={{axis: 'x', duration: 250}}
   in:slide={{axis: 'x', duration: 250}}
-  class="flex justify-center items-center gap-2"
+  class="flex justify-center items-center"
   class:flex-row-reverse={!left}
   class:flex-row={left}
 >
