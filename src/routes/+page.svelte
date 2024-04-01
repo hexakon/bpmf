@@ -2,6 +2,7 @@
   import Key from "$lib/Key.svelte";
   import KeyboardRow from "$lib/KeyboardRow.svelte";
   import Challenge from "$lib/Challenge.svelte";
+  import ChallengePreview from '$lib/ChallengePreview.svelte'
   import challenges from '$lib/challenges.json';
   import { key_display_mode, current_challenge, current_challenge_number, cursor, last_input } from "$lib/stores";
 
@@ -23,7 +24,7 @@
   let shift_is_pressed = false;
   let read_from_left = false;
   function switchdisplay (e: KeyboardEvent) {
-    console.log(e.key);
+    //console.log(e.key);
     if (e.key === 'Shift' && !shift_is_pressed) {
       shift_is_pressed = true;
       switch ($key_display_mode) {
@@ -39,9 +40,8 @@
       }
     }
     else if (e.key === 'Escape') {
-      $last_input = 'esc';
-      $cursor.all = 999; // forces this to top out Challenge.svelte and switch to next challenge
-      console.log("NEXT")
+      $last_input = [...$last_input, 'esc'];
+      //console.log("NEXT")
     }
     else if (e.key === 'Tab') {
       e.preventDefault()
@@ -57,26 +57,40 @@
   shuffleChallenges() // shuffle once on load
 
   $: { // reaction is triggered by Challenge.svelte incrementing $current_challenge number, so we don't increment it here
-    console.log("challenge completed! moving to number "+$current_challenge_number)
+    //console.log("challenge completed! moving to number "+$current_challenge_number)
     if ($current_challenge_number >= challenges.length) {
       $current_challenge_number = 0;
       shuffleChallenges()
-      console.log("shuffling challenges");
+      //console.log("shuffling challenges");
     }
-    console.log(challenge_list);
-    console.log(challenge_list[$current_challenge_number]);
+    //console.log(challenge_list);
+    //console.log(challenge_list[$current_challenge_number]);
     nextChallenge()
   }
 </script>
 
 
-<div class="w-100% h-full min-h-lvh bg-zinc-900 flex flex-col justify-center items-center text-white">
+<div class="w-100% h-full overflow-hidden min-h-lvh bg-zinc-900 flex flex-col justify-center items-center text-white">
   
-  <div class="flex flex-row w-lvw justify-center overflow-hidden my-20">
-    {#key [$current_challenge_number, read_from_left]}
-      <Challenge left={read_from_left} />
-    {/key}
+  <div class="relative w-lvw my-16 flex justify-center overflow-hidden">
+
+    <div class="flex justify-center w-max"
+      class:flex-row={read_from_left}
+      class:flex-row-reverse={!read_from_left}>
+
+      {#key [$current_challenge_number, read_from_left]}
+        <ChallengePreview
+          previewed_challenge={challenge_list[$current_challenge_number+1] ? challenge_list[$current_challenge_number+1] : ["",""]} hidden={true} />
+        <Challenge left={read_from_left} />
+        <ChallengePreview
+          previewed_challenge={challenge_list[$current_challenge_number+1] ? challenge_list[$current_challenge_number+1] : ["",""]} left={read_from_left} />
+      {/key}
+      
+    </div>
+
+    <div class="absolute top-0 right-0 w-lvw h-16 z-10" style="background: linear-gradient(90deg, #18181b, #18181b00 15%, #18181b00 85%, #18181b);" />
   </div>
+  
 
   <KeyboardRow>
     <Key bpmf="ㄅ" key="1" finger=1 />

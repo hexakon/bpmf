@@ -1,37 +1,43 @@
 <script lang="ts">
   import { last_input, current_challenge, current_challenge_number, cursor } from '$lib/stores';
   import Character from '$lib/Character.svelte';
-  import { fade, fly, slide } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
 
-  let chars  = $current_challenge[0].split('');
-  let bpmfs  = $current_challenge[1].split('*');
-  let inputs = $current_challenge[1]
+  let chars: string[] = $current_challenge[0].split('');
+  let bpmfs: string[] = $current_challenge[1].split('*');
 
   export let left = false;
 
+  $: if ($last_input.length > 0) { // do stuff upon receiving input
 
-  $: if ($last_input !== '') { // do stuff upon receiving input
-    if ($last_input === inputs[$cursor.all]) {
-      $cursor.all++;
-      $cursor.bpmf++;
-      console.log("correct input");
-      if (inputs[$cursor.all] === "*") {
-        $cursor.all++;
-        $cursor.char++;
-        $cursor.bpmf = 0;
-        console.log("next character");
+    for (const bpmfInput of $last_input) { // for each input (possibly redundant since only 1 input gets sent at a time)
+
+      if (bpmfs[$cursor.char].includes(bpmfInput) && !$cursor.inputted.includes(bpmfInput)) {
+
+        if (/[ˊˇˋ˙ ]/.test(bpmfInput) && $cursor.tone) { // if input is tone (final bpmf)
+          $cursor.inputted = [];
+          $cursor.char++;
+          $cursor.tone = false;
+          // next character
+        } else if (!/[ˊˇˋ˙ ]/.test(bpmfInput)) { // input is normal bpmf (NOT a tone)
+          $cursor.inputted = [...$cursor.inputted, bpmfInput];
+          if ($cursor.inputted.length === bpmfs[$cursor.char].length-1) {
+            $cursor.tone = true;
+          }
+        }
+
       }
-    }
-    $last_input = ''; // reset feed
 
-    if ($cursor.all >= $current_challenge[1].length) { // if the entire challenge is completed
+    }
+    if ($cursor.char >= bpmfs.length || $last_input[0] === 'esc') { // if the entire challenge is completed
       $cursor = {
-        "all": 0,
+        "inputted": [],
         "char": 0,
-        "bpmf": 0
+        "tone": false
       },
       $current_challenge_number++;
     }
+    $last_input = []; // remove items
   }
 
   
@@ -43,7 +49,7 @@
 <div
   out:slide={{axis: 'x', duration: 250}}
   in:slide={{axis: 'x', duration: 250}}
-  class="flex justify-center items-center gap-2"
+  class="flex justify-center items-center"
   class:flex-row-reverse={!left}
   class:flex-row={left}
 >

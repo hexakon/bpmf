@@ -14,8 +14,15 @@
       case "needed":
         active = new RegExp(bpmf).test($current_challenge[1]);
         break;
+      /*case "next":
+        if (/[ˊˋˇ˙ ]/.test(bpmf)) {
+          active = $current_challenge[1].split("*")[$cursor.char].includes(bpmf) && !$cursor.inputted.includes(bpmf) && $cursor.tone;
+        } else {
+          active = $current_challenge[1].split("*")[$cursor.char].includes(bpmf) && !$cursor.inputted.includes(bpmf);
+        }
+        break;*/
       case "next":
-        active = $current_challenge[1][$cursor.all] === bpmf;
+        active = $current_challenge[1].split("*")[$cursor.char].includes(bpmf) && !$cursor.inputted.includes(bpmf);
         break;
     }
   }
@@ -25,7 +32,8 @@
     if (keypressed === true) return; // do nothing if key already pressed
     if (event.key === '/') event.preventDefault(); // why is this key bound to the same thing as ctrl+f on firefox?
     if (event.key === bpmf || event.key === key) {
-      $last_input = bpmf;
+      $last_input = [...$last_input, bpmf];
+      //console.log($last_input)
       keypressed = true;
     }
   }
@@ -58,7 +66,7 @@
   class:border-pink-500  ={finger==="8" && active} class:text-pink-500  ={finger==="8" && active}
   class:w-72={finger==="9"}
 
-  class:scale-90={keypressed} class:opacity-50={keypressed}
+  class:scale-90={keypressed}     class:opacity-50={keypressed}
   class:border-gray-700={!active} class:text-gray-700={!active}
 >
   {#if keyVisible}
